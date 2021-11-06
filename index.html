@@ -17,12 +17,25 @@
                 <h2 id="question-prompt"></h2>
                 <div id="responses"></div>
             </div>
-                <div id="quiz-area">
-                    <h2>Coding Quiz Challenge</h2>
-                    <p>Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
-                    
-                    <button class="btn start-btn">Start Quiz</button>
-                </div>
+            <div id="quiz-area">
+                <h2>Coding Quiz Challenge</h2>
+                <p>Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
+                
+                <button class="btn" id="start-btn">Start Quiz</button>
+            </div>
+            <div id="end-quiz-area" class="hide">
+                <h2>All done!</h2>
+                <p>Your final score is <span id="score"></span></p>
+                <form id="initials-form">
+                    <div class="form-group">
+                        <label for="initialz">Enter initials:</label>
+                        <input type="text" name="initials" id="initialz" />
+                    </div>
+                    <div class="form-group">
+                        <button class="btn" id="initials-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
         </main>
 
         <script src="./assets/js/script.js"></script>
