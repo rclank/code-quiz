@@ -9,32 +9,41 @@
     </head>
     <body>
         <header>
-            <h2><a href=#>View high scores</a></h2>
+            <button class="link" id="high-scores-link">View high scores</button>
             <p>Time: <span id="timer">0</span></p>
         </header>
         <main class="page-content">
-            <div id="question-area" class="hide">
+            <div id="question-card" class="card hide">
                 <h2 id="question-prompt"></h2>
                 <div id="responses"></div>
             </div>
-            <div id="quiz-area">
+            <div class="card" id="quiz-card">
                 <h2>Coding Quiz Challenge</h2>
                 <p>Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
                 
                 <button class="btn" id="start-btn">Start Quiz</button>
             </div>
-            <div id="end-quiz-area" class="hide">
+            <div id="end-quiz-card" class="card hide">
                 <h2>All done!</h2>
                 <p>Your final score is <span id="score"></span></p>
                 <form id="initials-form">
                     <div class="form-group">
-                        <label for="initialz">Enter initials:</label>
-                        <input type="text" name="initials" id="initialz" />
+                        <label for="initials">Enter initials:</label>
+                        <input type="text" name="initials" id="initials" />
                     </div>
                     <div class="form-group">
-                        <button class="btn" id="initials-btn">Submit</button>
+                        <button class="btn" id="submit-score-btn">Submit</button>
                     </div>
                 </form>
+            </div>
+            <div id="high-scores-card" class="card hide">
+                <h2>High scores</h2>
+                <div class="scoreboard" id="scoreboard">
+                </div>
+                <div>
+                    <button class="btn" id="go-back-btn">Go back</button>
+                    <button class="btn" id="clear-scores-btn">Clear high scores</button>
+                </div>
             </div>
         </main>
 

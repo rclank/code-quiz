@@ -23,3 +23,8 @@ h2 {
 .btn {
     /* style */
 }
+
+.link {
+    background: none;
+    border: none;
+}
