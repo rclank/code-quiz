@@ -4,26 +4,26 @@ const questions = [
         answers: ['strings', 'booleans', 'alerts', 'numbers'],
         correctAnswer: 'alerts'
     },
-    // {
-    //     question:"The condition in an if/else statement is enclosed with _______.",
-    //     answers: ['quotes', 'curly brackets', 'parenthesis', 'square brackets'],
-    //     correctAnswer: 'parenthesis'
-    // },
-    // {
-    //     question:"Arrays in JavaScript can be used to store _______.",
-    //     answers: ['numbers and strings', 'other arrays', 'booleans', 'all of the above'],
-    //     correctAnswer: 'all of the above'
-    // },
-    // {
-    //     question:"String values must be enclosed within _______ when being assigned to variables.",
-    //     answers: ['commas', 'curly brackets', 'quotes', 'parenthesis'],
-    //     correctAnswer: 'quotes'
-    // },
-    // {
-    //     question:"A very useful tool used during the development and debugging for printing content to the debugger is:",
-    //     answers: ['Javascript', 'terminal/bash', 'for loops', 'console.log'],
-    //     correctAnswer: 'console.log'
-    // }
+    {
+        question:"The condition in an if/else statement is enclosed with _______.",
+        answers: ['quotes', 'curly brackets', 'parenthesis', 'square brackets'],
+        correctAnswer: 'parenthesis'
+    },
+    {
+        question:"Arrays in JavaScript can be used to store _______.",
+        answers: ['numbers and strings', 'other arrays', 'booleans', 'all of the above'],
+        correctAnswer: 'all of the above'
+    },
+    {
+        question:"String values must be enclosed within _______ when being assigned to variables.",
+        answers: ['commas', 'curly brackets', 'quotes', 'parenthesis'],
+        correctAnswer: 'quotes'
+    },
+    {
+        question:"A very useful tool used during the development and debugging for printing content to the debugger is:",
+        answers: ['Javascript', 'terminal/bash', 'for loops', 'console.log'],
+        correctAnswer: 'console.log'
+    }
 ]
 // DOM elements
 let startBtnEl = document.querySelector("#start-btn");
@@ -32,12 +32,15 @@ let quizCardEl = document.querySelector("#quiz-card");
 let timerEl = document.querySelector("#timer");
 let endQuizCardEl = document.querySelector("#end-quiz-card");
 let scoresCardEl = document.querySelector("#high-scores-card");
+let accuracyEl = document.getElementById('accuracy');
 
 // variables
 let questionCounter = 0;
-let timeLeft = 75;
+let timeLeft;
 const penaltyTime = 10;
 let scores;
+let userData;
+let scoresUpdated = false;
 
 // timer functions
 let timer;
@@ -91,8 +94,28 @@ let unhideScoreCard = function() {
     scoresCardEl.classList.remove("hide");
 }
 
+// unhide start quiz card
+let unhideStartQuizCard = function () {
+        // hide other elements
+        scoresCardEl.classList.add('hide');
+        questionCardEl.classList.add('hide');
+        endQuizCardEl.classList.add('hide');
+        document.querySelector("header").classList.add('hide');
+        accuracyEl.classList.add('hide');
+    
+        document.querySelector('header').classList.remove('hide');
+        questionCounter = 0;
+        timerEl.textContent = 0;
+        document.getElementById('scoreboard').innerHTML = "";
+        quizCardEl.classList.remove("hide");
+}
+
 // view high scores link
-document.querySelector("#high-scores-link").addEventListener("click", unhideScoreCard);
+document.querySelector("#high-scores-link").addEventListener("click", function() {
+    clearInterval(timer);
+    buildScoreboard();
+    unhideScoreCard();
+});
 
 // capture start click
 startBtnEl.addEventListener("click", function() {
@@ -101,6 +124,7 @@ startBtnEl.addEventListener("click", function() {
     questionCardEl.classList.remove('hide');
 
 
+    timeLeft = 75;
     // start timer
     // call function first so as to avoid first interval delay!
     runTimer();
@@ -143,11 +167,15 @@ let checkAnswer = function () {
     if (this.value === questions[questionCounter].correctAnswer) {
         // unhide 'Correct!'
         console.log('correct');
+        accuracyEl.textContent = 'Correct!';
+        accuracyEl.classList.remove('hide');
     }
     // if wrong
     else {
         // unhide 'Wrong!'
         console.log('wrong');
+        accuracyEl.textContent = 'Wrong!';
+        accuracyEl.classList.remove('hide');
 
         // subtract time
         if (timeLeft >= penaltyTime) {
@@ -206,9 +234,11 @@ let endQuiz = function() {
 
 // go back button
 document.querySelector('#go-back-btn').addEventListener("click", function() {
-    scoresCardEl.classList.add('hide');
-    document.querySelector('header').classList.remove('hide');
-    quizCardEl.classList.remove('hide');
+    // scoresCardEl.classList.add('hide');
+    // document.querySelector('header').classList.remove('hide');
+    // quizCardEl.classList.remove('hide');
+    unhideStartQuizCard();
+    userData = undefined;
 })
 
 // clear high scores button
@@ -219,32 +249,31 @@ document.getElementById('clear-scores-btn').onclick = function() {
 
 // load scores
 let loadScores = function() {
-    
+
 }
 // update scores
 // sort scores
 
 // build scoreboard
-
-// submit button
-document.getElementById('submit-score-btn').onclick = function() {
-    let userData = {
-        initials: document.getElementById('initials').value,
-        score: timeLeft
-    }
-
+let buildScoreboard = function() {
     scores = localStorage.getItem('scores');
     if (scores === null || scores === '[]') {
-        scores = [userData];
+        if (userData !== undefined) {
+            scores = [userData];
+        } else {
+            window.alert("No high scores!");
+            return false;
+        }
     } else {
         scores = JSON.parse(scores);
-        scores.unshift(userData);
+        if (userData !== undefined) {
+            scores.unshift(userData);
+            scoresUpdated = true;
+        }
         scores.sort((a, b) => {
             return b.score - a.score;
         });
     }
-
-    localStorage.setItem('scores', JSON.stringify(scores));
 
     // loop through up to 10 scores
     // build score items to append to div
@@ -254,6 +283,54 @@ document.getElementById('submit-score-btn').onclick = function() {
         scoreRecordEl.textContent = `${i + 1}. ${scores[i].initials} - ${scores[i].score}`;
         document.getElementById('scoreboard').appendChild(scoreRecordEl);
     }
+}
+
+// // submit button
+// document.getElementById('submit-score-btn').onclick = function(e) {
+//     e.preventDefault();
+//     userData = {
+//         initials: document.getElementById('initials').value,
+//         score: timeLeft
+//     }
+
+//     scores = localStorage.getItem('scores');
+//     if (scores === null || scores === '[]') {
+//         scores = [userData];
+//     } else {
+//         scores = JSON.parse(scores);
+//         scores.unshift(userData);
+//         scores.sort((a, b) => {
+//             return b.score - a.score;
+//         });
+//     }
+
+//     localStorage.setItem('scores', JSON.stringify(scores));
+
+
+//     // loop through up to 10 scores
+//     // build score items to append to div
+//     for (let i = 0; i < Math.min(scores.length, 10); i++) {
+//         let scoreRecordEl = document.createElement('div');
+//         scoreRecordEl.classList.add('score-record');
+//         scoreRecordEl.textContent = `${i + 1}. ${scores[i].initials} - ${scores[i].score}`;
+//         document.getElementById('scoreboard').appendChild(scoreRecordEl);
+//     }
+
+//     unhideScoreCard();
+// }
+
+// submit button2
+document.getElementById('submit-score-btn').onclick = function(e) {
+    e.preventDefault();
+    userData = {
+        initials: document.getElementById('initials').value,
+        score: timeLeft
+    }
+
+    buildScoreboard();
+
+    localStorage.setItem('scores', JSON.stringify(scores));
 
     unhideScoreCard();
+    document.getElementById('initials').value = "";
 }
